@@ -34,4 +34,26 @@ class Project extends Model
     {
         return $this->hasMany(Invitation::class);
     }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function activity(): HasMany
+    {
+        return $this->hasMany(TaskUpdate::class);
+    }
+
+    /** Leader + members (people who can be assigned tasks). */
+    public function workers(): BelongsToMany
+    {
+        return $this->members()->wherePivotIn('role', ['leader', 'member']);
+    }
+
+    /** Users with a given project role, e.g. ->usersWithRole('leader'). */
+    public function usersWithRole(string ...$roles)
+    {
+        return $this->members()->wherePivotIn('role', $roles)->get();
+    }
 }

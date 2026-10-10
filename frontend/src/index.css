@@ -30,3 +30,10 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .card { box-shadow: none !important; border-color: #e2e8f0 !important; }
+  .report-print { max-width: none !important; }
+}

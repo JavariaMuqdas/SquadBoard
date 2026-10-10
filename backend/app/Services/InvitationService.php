@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class InvitationService
 {
+    public function __construct(private Notifier $notifier)
+    {
+    }
+
     /** Loads a usable invitation from its plain token, or throws. */
     public function resolve(?string $plainToken): Invitation
     {
@@ -33,7 +37,9 @@ class InvitationService
             throw InvitationException::emailMismatch($invitation->email);
         }
 
-        return DB::transaction(function () use ($invitation, $user) {
+        $joined = false;
+
+        $project = DB::transaction(function () use ($invitation, $user, &$joined) {
             $project = $invitation->project;
 
             // Never downgrade an existing membership (e.g. a leader re-invited as member)
@@ -42,6 +48,7 @@ class InvitationService
                     'role' => $invitation->role,
                     'joined_at' => now(),
                 ]);
+                $joined = true;
             }
 
             $invitation->forceFill(['accepted_at' => now()])->save();
@@ -53,5 +60,11 @@ class InvitationService
 
             return $project;
         });
+
+        if ($joined) {
+            $this->notifier->memberJoined($project, $user, $invitation->role);
+        }
+
+        return $project;
     }
 }

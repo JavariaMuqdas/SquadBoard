@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Invitation;
 use App\Models\Project;
 use App\Models\User;
+use App\Services\Notifier;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -27,7 +28,7 @@ class AddProjectMember extends Command
 
     protected $description = 'Add a member or supervisor to a project directly (creates the account if needed)';
 
-    public function handle(): int
+    public function handle(Notifier $notifier): int
     {
         $email = mb_strtolower(trim($this->argument('email')));
         $role = $this->option('role');
@@ -93,6 +94,9 @@ class AddProjectMember extends Command
                 ->whereNull('accepted_at')
                 ->update(['accepted_at' => now()]);
         });
+
+        // Same in-app notification the leader gets when someone accepts an invite
+        $notifier->memberJoined($project, $user, $role);
 
         $this->newLine();
         $this->info("✔ {$user->name} added to “{$project->name}” as {$role}.");

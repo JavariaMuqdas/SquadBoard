@@ -28,9 +28,8 @@ class ProjectResource extends JsonResource
                 'avatar' => $m->avatar,
                 'role' => $m->pivot->role,
             ])->values()),
-            // Filled in when the Tasks module lands
-            'tasks_total' => 0,
-            'tasks_done' => 0,
+            'tasks_total' => (int) ($this->tasks_count ?? 0),
+            'tasks_done' => (int) ($this->tasks_done_count ?? 0),
             'created_at' => $this->created_at,
         ];
     }

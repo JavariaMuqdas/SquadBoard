@@ -50,8 +50,9 @@ class LoginController extends Controller
         return response()->json(['message' => 'Logged out.']);
     }
 
-    public function me(Request $request): UserResource
+        public function me(Request $request): JsonResponse
     {
-        return new UserResource($request->user()->loadCount('projects'));
+        // Always 200. A JsonResource answers 201 when the user model was created earlier in the same PHP process (e.g. in tests).
+        return (new UserResource($request->user()->loadCount('projects')))->response()->setStatusCode(200);
     }
 }
