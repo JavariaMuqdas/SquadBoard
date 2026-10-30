@@ -3,6 +3,7 @@
 return [
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
     'invite_expiry_days' => (int) env('INVITE_EXPIRY_DAYS', 7),
+    'show_invite_links' => (bool) env('SHOW_INVITE_LINKS', false),
 
     // Free plan limits (paid plans come later)
     'free' => [

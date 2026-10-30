@@ -106,7 +106,7 @@ function InviteForm({ project, onDone, autoFocus }) {
               ))}
               {Object.entries(result.dev_links || {}).map(([email, link]) => (
                 <div key={email} className="flex items-center gap-2 rounded-lg border border-dashed border-brand-200 bg-brand-50/50 px-3 py-2 text-xs">
-                  <span className="min-w-0 flex-1 truncate text-brand-800"><b>Dev link</b> for {email}</span>
+                  <span className="min-w-0 flex-1 truncate text-brand-800"><b>Invite link</b> for {email}</span>
                   <button type="button" onClick={() => copy(link)} className="flex items-center gap-1 font-semibold text-brand-700">
                     {copied === link ? <><Check className="h-3.5 w-3.5" /> Copied</> : <><Copy className="h-3.5 w-3.5" /> Copy</>}
                   </button>
@@ -153,8 +153,14 @@ function PendingInvites({ project, onChanged, notify }) {
     try {
       await csrf()
       if (action === 'resend') {
-        await api.post(`/api/projects/${project.id}/invitations/${inv.id}/resend`)
-        notify(`Invite re-sent to ${inv.email}.`)
+        const { data } = await api.post(`/api/projects/${project.id}/invitations/${inv.id}/resend`)
+        if (data.dev_link) {
+          // Email may be unavailable (e.g. free hosting) — give the leader a fresh link to share
+          try { await navigator.clipboard.writeText(data.dev_link); notify(`New invite link for ${inv.email} copied — paste it to them.`) }
+          catch { notify(`New invite link: ${data.dev_link}`) }
+        } else {
+          notify(`Invite re-sent to ${inv.email}.`)
+        }
       } else {
         await api.delete(`/api/projects/${project.id}/invitations/${inv.id}`)
         notify(`Invite to ${inv.email} cancelled.`)

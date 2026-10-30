@@ -88,7 +88,7 @@ class ProjectInviteService
     /** In local development the link is returned to the UI so you can test without a real mailbox. */
     private function devLink(string $plain): ?string
     {
-        return app()->isLocal()
+        return app()->isLocal() || config('squadboard.show_invite_links')
             ? rtrim(config('squadboard.frontend_url'), '/').'/invite/'.$plain
             : null;
     }

@@ -11,10 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
+     ->withMiddleware(function (Middleware $middleware) {
         // Sanctum SPA: requests from the React app get session + CSRF protection
         $middleware->statefulApi();
+
+        // Hosting providers (Render, Vercel) sit in front of the app as proxies
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+   
