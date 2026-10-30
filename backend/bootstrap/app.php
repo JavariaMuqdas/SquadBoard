@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Hosting providers (Render, Vercel) sit in front of the app as proxies
         $middleware->trustProxies(at: '*');
     })
+    ->withMiddleware(function (Middleware $middleware) {
+    $middleware->trustProxies(at: '*');
+})
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
