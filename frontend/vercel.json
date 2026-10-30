@@ -1,8 +1,7 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://squadboard.onrender.com/" },
-    { "source": "/sanctum/:path*", "destination": "https://squadboard.onrender.com/" },
-    { "source": "/oauth/:path*", "destination": "https://squadboard.onrender.com/" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/:path*", "destination": "https://squadboard.onrender.com/api/:path*" },
+    { "source": "/sanctum/:path*", "destination": "https://squadboard.onrender.com/sanctum/:path*" },
+    { "source": "/((?!api|sanctum).*)", "destination": "/index.html" }
   ]
 }
