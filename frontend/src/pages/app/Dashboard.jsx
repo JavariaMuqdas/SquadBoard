@@ -31,7 +31,8 @@ const greeting = () => {
 /* ——— Welcome banner with a small floating illustration ——— */
 function WelcomeBanner({ user, isNew, onCreate }) {
   // Skip titles so “Dr. Fahim Khan” is greeted as “Fahim”
-  const first = user.name.split(' ').find((w) => !/^(dr|prof|engr|mr|mrs|ms|sir|miss)\.?$/i.test(w)) ?? user.name
+  const name = user?.name ?? 'there'
+const first = name.split(' ').find((w) => !/^(dr|prof|engr|mr|mrs|ms|sir|miss)\.?$/i.test(w)) ?? name
   const today = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })
   return (
     <motion.section
